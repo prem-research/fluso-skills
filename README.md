@@ -89,8 +89,8 @@ Each skill needs a matching `marketplace.json` entry:
     "scripts/setup-hyperframes-runtime.sh"
   ],
   "footprint": {
-    "source_size_bytes": 258321,
-    "estimated_installed_size_bytes": 259345
+    "source_size_bytes": 258399,
+    "estimated_installed_size_bytes": 259423
   },
   "dependencies": {
     "tier": "user_space_runtime_setup",

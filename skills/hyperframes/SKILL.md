@@ -25,29 +25,26 @@ timeout 180s npx --yes hyperframes render --quality draft --fps 24 --workers 1 -
 
 This skill is allowed to prepare user-space runtime dependencies when needed. Do not block the workflow just because a dependency is not preinstalled. Try the user-space setup path first.
 
-## Speed Rules
+## Recommended Fast Path
 
-Do not turn a simple video request into a long infrastructure debugging session.
+Start with the shortest HyperFrames-native path that can produce a reviewable result, then deepen quality after the draft is visible.
 
-- For first drafts, default to `1280x720`, `24fps`, `--quality draft`, and `--workers 1`.
-- Use `--skip-skills` when scaffolding because this Fluso skill already provides the guidance.
-- Use `inspect --samples 5` for a first pass. Increase samples only after the draft is working.
-- For a 30 second video, build 4-6 clean scenes. Avoid over-engineered frame-by-frame effects unless requested.
-- Do not create custom `render.py`, `render.js`, `render.cjs`, Puppeteer, Playwright, or manual PNG-frame renderers unless the user explicitly asks for a custom renderer.
-- If HyperFrames inspect/render hangs for more than about 2 minutes, stop that command, report the blocker, and offer either the previewable project or a smaller draft render. Do not spend many minutes trying unrelated browser launch tricks.
-- Use final settings such as `1920x1080`, `30fps`, `--quality standard`, or `--quality high` only after the draft has passed validation or the user asks for final output.
+- For first drafts, prefer `1280x720`, `24fps`, `--quality draft`, and `--workers 1`.
+- Prefer `--skip-skills` when scaffolding because this Fluso skill already provides the guidance.
+- Prefer `inspect --samples 5` for a first pass. Increase samples after the draft is working.
+- For a 30 second video, 4-6 clean scenes is usually enough. Add complexity when the brief needs it.
+- Prefer HyperFrames CLI rendering over custom renderers. A custom Puppeteer/Playwright/PNG-frame pipeline is a fallback, not the default path.
+- Use final settings such as `1920x1080`, `30fps`, `--quality standard`, or `--quality high` after the draft has passed validation or when the user asks for final output.
 
-## Browser Boundary
+## Runtime Exploration Budget
 
-Do not debug the headless browser stack for a long time.
+The goal is not to forbid exploration. The goal is to avoid spending most of the task on environment debugging before the video exists.
 
-- Do not invoke a separate Headless Browser Setup skill.
-- Do not install or research Debian/shared-library packages such as `glib`, `libxi`, `libnss`, `libatk`, `libx11`, or browser system dependencies.
-- Do not run `apt`, `apt-cache`, `dpkg`, package-manager searches, Docker setup, or root/system dependency installation.
-- Do not create symlinks into system browser folders or manually patch browser library paths.
-- Do not switch to Playwright, Puppeteer, screenshots, PNG frame dumps, or FFmpeg frame assembly as a workaround.
-- If `hyperframes inspect` or `hyperframes render` fails because Chrome/Chromium cannot launch, stop. Report that the project is authored and linted, but browser rendering is blocked in this runtime.
-- The acceptable fallback is a previewable HyperFrames project, not a custom rendering pipeline.
+- First author the project and make it lint/validate clean. A previewable project is useful even if rendering later needs runtime work.
+- If `inspect` or `render` hangs or Chrome/Chromium fails to launch, make 2-3 targeted attempts using user-space tools and documented HyperFrames options.
+- Avoid long Debian package research, `apt`/`dpkg` investigation, browser library symlink experiments, or manual Chrome patching inside Fluso unless the user explicitly asks for deep runtime debugging.
+- If the native HyperFrames path is blocked, report the blocker and offer options: keep the previewable project, try a smaller draft, spend more time on runtime setup, or use a custom rendering fallback.
+- When the user explicitly prioritizes final video output over staying purely HyperFrames-native, a custom fallback can be used after explaining the tradeoff.
 
 ## Before Building
 
@@ -99,7 +96,7 @@ Read these when relevant:
 
 ## Runtime Setup
 
-Use system tools when they already exist, but prefer user-space setup for missing tools. Never use `sudo`, `apt`, Docker setup, or root-level installation unless the user explicitly asks for it.
+Use system tools when they already exist, but prefer user-space setup for missing tools. Fluso usually does not provide `sudo`, `apt`, Docker, or root-level installation, so treat those as unavailable unless the current runtime clearly supports them or the user explicitly asks for that investigation.
 
 If HyperFrames or FFmpeg is missing, run the bundled setup helper from the installed skill folder:
 
@@ -261,7 +258,7 @@ After adding a block or component, read the generated files and wire them into t
 
 - If HyperFrames packages cannot download, explain the network/package-manager blocker and keep the project files ready.
 - If `doctor` still reports missing FFmpeg after user-space setup, do not claim an MP4 was rendered.
-- If HyperFrames browser setup or browser launch fails, do not install shared libraries and do not switch to a custom renderer. Keep the project previewable and report the browser/runtime blocker.
+- If HyperFrames browser setup or browser launch fails, keep the project previewable and report the browser/runtime blocker. Use a custom renderer only when the user chooses that fallback or the task explicitly prioritizes a rendered file over the native HyperFrames path.
 - If `lint`, `validate`, or `inspect` fails, fix the HTML/CSS/timing before previewing as final.
 - If assets are missing, use clearly named placeholders only when the user agrees or the placeholders are part of a draft.
 - If rendering is slow or memory-heavy, reduce duration, resolution, FPS, worker count, or quality before retrying.
