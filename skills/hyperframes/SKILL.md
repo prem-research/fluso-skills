@@ -15,9 +15,9 @@ The source of truth is a project folder with `index.html`, optional `composition
 ```bash
 npx --yes hyperframes init <project-name> --non-interactive --example blank --skip-skills
 npx --yes hyperframes lint
-npx --yes hyperframes inspect --samples 5
+timeout 90s npx --yes hyperframes inspect --samples 5
 npx --yes hyperframes preview
-npx --yes hyperframes render --quality draft --fps 24 --workers 1 --output <file>.mp4
+timeout 180s npx --yes hyperframes render --quality draft --fps 24 --workers 1 --output <file>.mp4
 ```
 
 This skill is allowed to prepare user-space runtime dependencies when needed. Do not block the workflow just because a dependency is not preinstalled. Try the user-space setup path first.
@@ -33,6 +33,18 @@ Do not turn a simple video request into a long infrastructure debugging session.
 - Do not create custom `render.py`, `render.js`, `render.cjs`, Puppeteer, Playwright, or manual PNG-frame renderers unless the user explicitly asks for a custom renderer.
 - If HyperFrames inspect/render hangs for more than about 2 minutes, stop that command, report the blocker, and offer either the previewable project or a smaller draft render. Do not spend many minutes trying unrelated browser launch tricks.
 - Use final settings such as `1920x1080`, `30fps`, `--quality standard`, or `--quality high` only after the draft has passed validation or the user asks for final output.
+
+## Browser Boundary
+
+Do not debug the headless browser stack for a long time.
+
+- Do not invoke a separate Headless Browser Setup skill.
+- Do not install or research Debian/shared-library packages such as `glib`, `libxi`, `libnss`, `libatk`, `libx11`, or browser system dependencies.
+- Do not run `apt`, `apt-cache`, `dpkg`, package-manager searches, Docker setup, or root/system dependency installation.
+- Do not create symlinks into system browser folders or manually patch browser library paths.
+- Do not switch to Playwright, Puppeteer, screenshots, PNG frame dumps, or FFmpeg frame assembly as a workaround.
+- If `hyperframes inspect` or `hyperframes render` fails because Chrome/Chromium cannot launch, stop. Report that the project is authored and linted, but browser rendering is blocked in this runtime.
+- The acceptable fallback is a previewable HyperFrames project, not a custom rendering pipeline.
 
 ## Before Building
 
@@ -57,13 +69,7 @@ bash skills/hyperframes/scripts/setup-hyperframes-runtime.sh <project-dir>
 export PATH="<project-dir>/.hyperframes-tools/bin:<project-dir>/.hyperframes-tools/node_modules/.bin:$PATH"
 ```
 
-The helper reuses existing system tools when available. It installs only missing user-space packages under `<project-dir>/.hyperframes-tools`. It does not download a browser by default.
-
-Prepare HyperFrames' managed browser only when inspect/render actually needs it:
-
-```bash
-HYPERFRAMES_PREPARE_BROWSER=1 bash skills/hyperframes/scripts/setup-hyperframes-runtime.sh <project-dir>
-```
+The helper reuses existing system tools when available. It installs only missing user-space packages under `<project-dir>/.hyperframes-tools`. It does not download a browser or install browser shared libraries.
 
 After setup, check the environment:
 
@@ -82,7 +88,7 @@ Expected requirements:
 - Chrome or a HyperFrames-managed browser for preview/inspection/rendering
 - FFmpeg for final MP4/WebM rendering
 
-Run `hyperframes doctor` only when render/inspect fails or before a final render. If setup still cannot provide FFmpeg or Chrome, continue creating/editing the project when useful, but clearly say final rendering is blocked by the remaining runtime issue.
+Run `timeout 30s hyperframes doctor` only when render/inspect fails or before a final render. If setup still cannot provide FFmpeg or Chrome, continue creating/editing the project when useful, but clearly say final rendering is blocked by the remaining runtime issue.
 
 ## Authoring Rules
 
@@ -123,7 +129,7 @@ Build the hero frame first, then animate into it.
 
    ```bash
    hyperframes lint
-   hyperframes inspect --samples 5
+   timeout 90s hyperframes inspect --samples 5
    ```
 
 5. Preview for the user:
@@ -135,10 +141,10 @@ Build the hero frame first, then animate into it.
 6. Render only after validation is clean:
 
    ```bash
-   hyperframes render --quality standard --output final.mp4
+   timeout 180s hyperframes render --quality draft --fps 24 --workers 1 --output draft.mp4
    ```
 
-Use `hyperframes render --quality draft --fps 24 --workers 1 --output draft.mp4` for quick iteration and `--quality high` only for final output.
+Use `--quality standard` or `--quality high` only for final output after the draft path has already worked.
 
 ## Website-to-Video
 
@@ -166,7 +172,7 @@ After adding a block or component, read the generated files and wire them into t
 
 - If HyperFrames packages cannot download, explain the network/package-manager blocker and keep the project files ready.
 - If `doctor` still reports missing FFmpeg after user-space setup, do not claim an MP4 was rendered.
-- If HyperFrames browser setup fails, do not switch to a custom renderer. Keep the project previewable and report the browser/runtime blocker.
+- If HyperFrames browser setup or browser launch fails, do not install shared libraries and do not switch to a custom renderer. Keep the project previewable and report the browser/runtime blocker.
 - If `lint` or `inspect` fails, fix the HTML/CSS/timing before previewing as final.
 - If assets are missing, use clearly named placeholders only when the user agrees or the placeholders are part of a draft.
 - If rendering is slow or memory-heavy, reduce duration, resolution, FPS, worker count, or quality before retrying.
