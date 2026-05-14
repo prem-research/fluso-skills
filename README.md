@@ -2,6 +2,10 @@
 
 Public skill catalog for the [Fluso](https://fluso.ai/) Skill Marketplace.
 
+<p align="center">
+  <img src="assets/fluso-skills-overview.svg" alt="Fluso Skills marketplace overview" width="100%" />
+</p>
+
 This repository stores optional skills that can be discovered in Fluso and added to a user's workspace. These are different from Fluso's built-in skills: marketplace skills live here, are listed through `marketplace.json`, and are installed only when a user chooses to add them.
 
 ## How It Works
