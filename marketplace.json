@@ -14,8 +14,8 @@
       "entrypoint": "SKILL.md",
       "files": ["SKILL.md", "scripts/setup-hyperframes-runtime.sh"],
       "footprint": {
-        "source_size_bytes": 11898,
-        "estimated_installed_size_bytes": 15200
+        "source_size_bytes": 15459,
+        "estimated_installed_size_bytes": 16047
       },
       "dependencies": {
         "tier": "user_space_runtime_setup",
