@@ -2,7 +2,6 @@
 set -euo pipefail
 
 PROJECT_DIR="${1:-.}"
-PREPARE_BROWSER="${HYPERFRAMES_PREPARE_BROWSER:-0}"
 TOOLS_DIR="${PROJECT_DIR%/}/.hyperframes-tools"
 BIN_DIR="$TOOLS_DIR/bin"
 NODE_MODULES_BIN="$TOOLS_DIR/node_modules/.bin"
@@ -75,12 +74,7 @@ else
 fi
 if [ -x "$HYPERFRAMES_BIN" ]; then
   echo "HyperFrames CLI ready at $HYPERFRAMES_BIN"
-  if [ "$PREPARE_BROWSER" = "1" ]; then
-    echo "Preparing HyperFrames browser runtime"
-    PATH="$BIN_DIR:$NODE_MODULES_BIN:$PATH" "$HYPERFRAMES_BIN" browser ensure || true
-  else
-    echo "Skipping browser download. Set HYPERFRAMES_PREPARE_BROWSER=1 only when render/inspect needs it."
-  fi
+  echo "Browser runtime is not installed by this helper. If browser launch fails, report the runtime blocker instead of installing system libraries."
 else
   echo "HyperFrames CLI was not installed at $HYPERFRAMES_BIN" >&2
   exit 1
