@@ -2,29 +2,30 @@
   "schema_version": 1,
   "skills": [
     {
-      "id": "official-github-smoke-test",
-      "display_name": "Official GitHub Smoke Test",
+      "id": "hyperframes",
+      "display_name": "HyperFrames",
       "version": "0.1.0",
       "publisher": "Fluso",
-      "summary": "A tiny dependency-free skill used to verify installation from the official GitHub skill marketplace.",
-      "description": "Use this skill only to verify that Fluso can discover, install, reload, and remove a workspace skill from the prem-research/fluso-skills marketplace repository.",
-      "categories": ["Testing"],
-      "tags": ["github", "marketplace", "smoke-test"],
-      "license": "MIT",
+      "summary": "Create HTML-based videos with HyperFrames.",
+      "description": "Guides Fluso through planning, authoring, validating, previewing, and rendering HyperFrames video projects using HTML, CSS, JavaScript, animations, captions, overlays, transitions, and website-to-video workflows.",
+      "categories": ["Content", "Marketing"],
+      "tags": ["video", "html", "animation", "hyperframes"],
+      "license": "Apache-2.0",
       "entrypoint": "SKILL.md",
+      "files": ["SKILL.md", "scripts/setup-hyperframes-runtime.sh"],
       "footprint": {
-        "source_size_bytes": 640,
-        "estimated_installed_size_bytes": 1280
+        "source_size_bytes": 8549,
+        "estimated_installed_size_bytes": 11000
       },
       "dependencies": {
-        "tier": "instruction_only",
+        "tier": "user_space_runtime_setup",
         "recipes": [],
-        "system_capabilities": []
+        "system_capabilities": ["node", "npm"]
       },
       "safety": {
-        "has_helper_scripts": false,
+        "has_helper_scripts": true,
         "runs_install_script": false,
-        "network_at_runtime": false
+        "network_at_runtime": true
       }
     }
   ]
