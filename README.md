@@ -61,7 +61,7 @@ The `name` must match the folder name and the `id` in `marketplace.json`.
 4. Add the skill to `marketplace.json`.
 5. Open a pull request.
 
-Keep skill IDs in kebab case, for example `podcast-production`, `contract-review`, or `github-smoke-test`.
+Keep skill IDs in kebab case, for example `podcast-production`, `contract-review`, or `revenue-forecast`.
 
 ## Marketplace Entry
 
