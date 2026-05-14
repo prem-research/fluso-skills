@@ -10,17 +10,29 @@ labels:
 
 HyperFrames turns HTML, CSS, and JavaScript into video. Use it when the user wants a renderable video project, not just a storyboard or script.
 
-The source of truth is a project folder with `index.html`, optional `compositions/`, and optional `assets/`. The normal dev loop is:
+The source of truth is a project folder with `index.html`, optional `compositions/`, and optional `assets/`. The fast dev loop is:
 
 ```bash
-npx --yes hyperframes init <project-name> --non-interactive --example blank
+npx --yes hyperframes init <project-name> --non-interactive --example blank --skip-skills
 npx --yes hyperframes lint
-npx --yes hyperframes inspect
+npx --yes hyperframes inspect --samples 5
 npx --yes hyperframes preview
-npx --yes hyperframes render --output <file>.mp4
+npx --yes hyperframes render --quality draft --fps 24 --workers 1 --output <file>.mp4
 ```
 
 This skill is allowed to prepare user-space runtime dependencies when needed. Do not block the workflow just because a dependency is not preinstalled. Try the user-space setup path first.
+
+## Speed Rules
+
+Do not turn a simple video request into a long infrastructure debugging session.
+
+- For first drafts, default to `1280x720`, `24fps`, `--quality draft`, and `--workers 1`.
+- Use `--skip-skills` when scaffolding because this Fluso skill already provides the guidance.
+- Use `inspect --samples 5` for a first pass. Increase samples only after the draft is working.
+- For a 30 second video, build 4-6 clean scenes. Avoid over-engineered frame-by-frame effects unless requested.
+- Do not create custom `render.py`, `render.js`, `render.cjs`, Puppeteer, Playwright, or manual PNG-frame renderers unless the user explicitly asks for a custom renderer.
+- If HyperFrames inspect/render hangs for more than about 2 minutes, stop that command, report the blocker, and offer either the previewable project or a smaller draft render. Do not spend many minutes trying unrelated browser launch tricks.
+- Use final settings such as `1920x1080`, `30fps`, `--quality standard`, or `--quality high` only after the draft has passed validation or the user asks for final output.
 
 ## Before Building
 
@@ -38,14 +50,20 @@ For specific edits, read the existing HyperFrames files first and change only wh
 
 Use system tools when they already exist, but prefer user-space setup for missing tools. Never use `sudo`, `apt`, Docker setup, or root-level installation unless the user explicitly asks for it.
 
-If HyperFrames, FFmpeg, or the browser runtime is missing, run the bundled setup helper from the installed skill folder:
+If HyperFrames or FFmpeg is missing, run the bundled setup helper from the installed skill folder:
 
 ```bash
 bash skills/hyperframes/scripts/setup-hyperframes-runtime.sh <project-dir>
 export PATH="<project-dir>/.hyperframes-tools/bin:<project-dir>/.hyperframes-tools/node_modules/.bin:$PATH"
 ```
 
-The helper installs `hyperframes` and `ffmpeg-static` with npm under `<project-dir>/.hyperframes-tools`, then asks HyperFrames to prepare its managed browser runtime when available. This is intentionally user-space and project-local.
+The helper reuses existing system tools when available. It installs only missing user-space packages under `<project-dir>/.hyperframes-tools`. It does not download a browser by default.
+
+Prepare HyperFrames' managed browser only when inspect/render actually needs it:
+
+```bash
+HYPERFRAMES_PREPARE_BROWSER=1 bash skills/hyperframes/scripts/setup-hyperframes-runtime.sh <project-dir>
+```
 
 After setup, check the environment:
 
@@ -54,7 +72,7 @@ Run:
 ```bash
 node --version
 npm --version
-hyperframes doctor
+hyperframes --version
 ```
 
 Expected requirements:
@@ -64,7 +82,7 @@ Expected requirements:
 - Chrome or a HyperFrames-managed browser for preview/inspection/rendering
 - FFmpeg for final MP4/WebM rendering
 
-If setup still cannot provide FFmpeg or Chrome, continue creating/editing the project when useful, but clearly say final rendering is blocked by the remaining runtime issue.
+Run `hyperframes doctor` only when render/inspect fails or before a final render. If setup still cannot provide FFmpeg or Chrome, continue creating/editing the project when useful, but clearly say final rendering is blocked by the remaining runtime issue.
 
 ## Authoring Rules
 
@@ -94,13 +112,18 @@ Build the hero frame first, then animate into it.
 ## Workflow
 
 1. Clarify the brief and choose the canvas size.
-2. Scaffold a project with HyperFrames when possible.
+2. Scaffold a project with HyperFrames when possible:
+
+   ```bash
+   npx --yes hyperframes init <project-name> --non-interactive --example blank --skip-skills
+   ```
+
 3. Write or edit the composition HTML, CSS, assets, and timeline.
 4. Validate structure and layout:
 
    ```bash
    hyperframes lint
-   hyperframes inspect --samples 15
+   hyperframes inspect --samples 5
    ```
 
 5. Preview for the user:
@@ -115,7 +138,7 @@ Build the hero frame first, then animate into it.
    hyperframes render --quality standard --output final.mp4
    ```
 
-Use `--quality draft` for quick iteration and `--quality high` only for final output.
+Use `hyperframes render --quality draft --fps 24 --workers 1 --output draft.mp4` for quick iteration and `--quality high` only for final output.
 
 ## Website-to-Video
 
@@ -143,6 +166,7 @@ After adding a block or component, read the generated files and wire them into t
 
 - If HyperFrames packages cannot download, explain the network/package-manager blocker and keep the project files ready.
 - If `doctor` still reports missing FFmpeg after user-space setup, do not claim an MP4 was rendered.
+- If HyperFrames browser setup fails, do not switch to a custom renderer. Keep the project previewable and report the browser/runtime blocker.
 - If `lint` or `inspect` fails, fix the HTML/CSS/timing before previewing as final.
 - If assets are missing, use clearly named placeholders only when the user agrees or the placeholders are part of a draft.
 - If rendering is slow or memory-heavy, reduce duration, resolution, FPS, worker count, or quality before retrying.
