@@ -82,10 +82,15 @@ Each skill needs a matching `marketplace.json` entry:
   "tags": ["video", "html", "animation", "hyperframes"],
   "license": "Apache-2.0",
   "entrypoint": "SKILL.md",
-  "files": ["SKILL.md", "scripts/setup-hyperframes-runtime.sh"],
+  "files": [
+    "SKILL.md",
+    "references/video-composition.md",
+    "references/beat-direction.md",
+    "scripts/setup-hyperframes-runtime.sh"
+  ],
   "footprint": {
-    "source_size_bytes": 8549,
-    "estimated_installed_size_bytes": 11000
+    "source_size_bytes": 258321,
+    "estimated_installed_size_bytes": 259345
   },
   "dependencies": {
     "tier": "user_space_runtime_setup",
@@ -160,5 +165,7 @@ Before opening a PR, check that:
 ## Current Status
 
 This repository is the public source for Fluso's optional marketplace skills. The first marketplace skill is `hyperframes`, which helps Fluso create video projects with HTML, CSS, JavaScript, and HyperFrames.
+
+The HyperFrames skill includes upstream quality references for video composition, typography, motion, transitions, visual styles, captions, audio-reactive workflows, and validation helpers. Its `SKILL.md` is still the entrypoint; deeper files are loaded only when the task needs them.
 
 The catalog is intentionally simple for V1: add skill files, update `marketplace.json`, and submit a PR. Future improvements may include CI validation, automatic marketplace catalog generation, size checks, dependency review automation, and template-based skill creation.

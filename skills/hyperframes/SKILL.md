@@ -73,6 +73,30 @@ Do not jump straight from a vague prompt to HTML. For new multi-scene videos, cr
 
 Build what the user asked for. Do not add extra scenes, audio, narration, or complex effects unless they clearly improve the requested video or the user asked for them.
 
+## Upstream Quality References
+
+This skill bundles upstream HyperFrames guidance for higher-quality output. Read selectively; do not load every file by default.
+
+Always read these before a new multi-scene composition:
+
+- `references/video-composition.md` for video-scale density, color, type, and frame composition.
+- `references/beat-direction.md` for scene rhythm, beat direction, and transition planning.
+- `references/typography.md` for font pairing, size, readability, and text treatment.
+- `references/motion-principles.md` for GSAP motion quality and image/video movement.
+- `references/transitions.md` plus `references/transitions/catalog.md` for scene handoffs.
+
+Read these when relevant:
+
+- `house-style.md`, `visual-styles.md`, and `palettes/*.md` when the user has not provided a visual identity.
+- `references/prompt-expansion.md` for open-ended briefs that need a clearer creative direction before implementation.
+- `references/techniques.md` for richer visual techniques such as SVG drawing, kinetic type, canvas, CSS 3D, or motion paths.
+- `patterns.md` for title cards, picture-in-picture, slideshows, and common structure patterns.
+- `data-in-motion.md` for stats, charts, KPIs, and infographic-style scenes.
+- `references/captions.md`, `references/dynamic-techniques.md`, and `references/transcript-guide.md` when working with subtitles, transcripts, karaoke captions, or lyric-style timing.
+- `references/audio-reactive.md` and `references/narration.md` when the brief includes music, voiceover, audio sync, or TTS.
+- `references/css-patterns.md` for marker highlights, circles, burst lines, sketch effects, and animated emphasis.
+- `references/design-picker.md` and `templates/design-picker.html` only when the user wants to visually choose a design direction.
+
 ## Runtime Setup
 
 Use system tools when they already exist, but prefer user-space setup for missing tools. Never use `sudo`, `apt`, Docker setup, or root-level installation unless the user explicitly asks for it.
@@ -189,6 +213,19 @@ Multi-scene videos need deliberate transitions. A sequence of hard jumps usually
 
 Use `--quality standard` or `--quality high` only for final output after the draft path has already worked.
 
+## Advanced Quality Checks
+
+For substantial new compositions, use the bundled quality scripts after `lint`, `validate`, and `inspect` pass:
+
+```bash
+node skills/hyperframes/scripts/animation-map.mjs <project-dir> --out <project-dir>/.hyperframes/anim-map
+node skills/hyperframes/scripts/contrast-report.mjs <project-dir> --out <project-dir>/.hyperframes/contrast
+```
+
+If helper packages are missing, prefer the normal HyperFrames CLI checks first. Only allow script dependency bootstrap when the project already has HyperFrames tooling available and the extra report is worth the time.
+
+Read the generated reports. Fix unexpected offscreen elements, collisions, invisible text, dead animation zones, and contrast warnings before calling the video production-ready.
+
 ## Variables and Editability
 
 When the user may want to revise text, colors, or content later, expose the important inputs as HyperFrames variables:
@@ -244,3 +281,4 @@ Useful references:
 - HyperFrames docs: https://hyperframes.heygen.com/introduction
 - Quickstart: https://hyperframes.heygen.com/quickstart
 - CLI reference: https://hyperframes.heygen.com/packages/cli
+- Official upstream skill source: https://github.com/heygen-com/hyperframes/tree/main/skills/hyperframes
