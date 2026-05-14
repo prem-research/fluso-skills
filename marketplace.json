@@ -7,7 +7,7 @@
       "version": "0.1.0",
       "publisher": "Fluso",
       "summary": "Create HTML-based videos with HyperFrames.",
-      "description": "Guides Fluso through planning, authoring, validating, previewing, and rendering HyperFrames video projects using HTML, CSS, JavaScript, animations, captions, overlays, transitions, and website-to-video workflows.",
+      "description": "Guides Fluso through planning, authoring, validating, previewing, rendering, and verifying HyperFrames video projects using HTML, CSS, JavaScript, animations, captions, overlays, transitions, and website-to-video workflows.",
       "categories": [
         "Content",
         "Marketing"
@@ -66,12 +66,14 @@
         "scripts/contrast-report.mjs",
         "scripts/package-loader.mjs",
         "scripts/setup-hyperframes-runtime.sh",
+        "scripts/validate-render.mjs",
         "templates/design-picker.html",
         "visual-styles.md"
       ],
       "footprint": {
-        "source_size_bytes": 258399,
-        "estimated_installed_size_bytes": 259423
+        "source_size_bytes": 268448,
+        "estimated_installed_size_bytes": 269472,
+        "estimated_runtime_cache_bytes": 1200000000
       },
       "dependencies": {
         "tier": "user_space_runtime_setup",

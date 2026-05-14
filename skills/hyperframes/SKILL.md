@@ -12,18 +12,31 @@ HyperFrames turns HTML, CSS, and JavaScript into video. Use it when the user wan
 
 This skill follows the official HyperFrames skill guidance from `heygen-com/hyperframes/skills/hyperframes`, adapted for Fluso's workspace runtime. Keep the upstream authoring discipline, but keep the runtime loop bounded and fast.
 
-The source of truth is a project folder with `index.html`, optional `compositions/`, and optional `assets/`. The fast dev loop is:
+The source of truth is a project folder with `index.html`, optional `compositions/`, and optional `assets/`. The fast dev loop is HyperFrames-native:
 
 ```bash
-npx --yes hyperframes init <project-name> --non-interactive --example blank --skip-skills
-npx --yes hyperframes lint
-npx --yes hyperframes validate
-timeout 90s npx --yes hyperframes inspect --samples 5
-npx --yes hyperframes preview
-timeout 180s npx --yes hyperframes render --quality draft --fps 24 --workers 1 --output <file>.mp4
+bash skills/hyperframes/scripts/setup-hyperframes-runtime.sh <project-dir>
+source <printed-env-file>
+hyperframes init <project-name> --non-interactive --example blank --skip-skills
+hyperframes lint <project-dir>
+hyperframes validate <project-dir>
+timeout 90s hyperframes snapshot <project-dir> --frames 5
+timeout 90s hyperframes inspect <project-dir> --samples 5
+(cd <project-dir> && timeout 300s hyperframes render --quality draft --fps 24 --workers 1 --no-browser-gpu --output <file>.mp4)
+node skills/hyperframes/scripts/validate-render.mjs <file>.mp4 --expect-duration <seconds> --expect-width <w> --expect-height <h> --expect-fps 24
 ```
 
 This skill is allowed to prepare user-space runtime dependencies when needed. Do not block the workflow just because a dependency is not preinstalled. Try the user-space setup path first.
+
+## Execution Contract
+
+Use HyperFrames CLI as the default and preferred path for scaffolding, preview, snapshot, inspection, and rendering.
+
+- Do not use Puppeteer, Playwright, Selenium, manual PNG frame capture, or custom renderers unless the user explicitly approves that fallback.
+- If the user says "HyperFrames CLI only", treat that as a hard boundary. If the CLI cannot render, report the blocker and stop instead of switching tools.
+- Never claim a video was rendered until the MP4/WebM exists and passes `validate-render.mjs` or equivalent `ffprobe` validation.
+- Distinguish clearly between `project ready`, `preview available`, `draft rendered`, and `final rendered`.
+- A video with no audio is a `silent draft` unless the user explicitly requested no audio.
 
 ## Recommended Fast Path
 
@@ -31,9 +44,9 @@ Start with the shortest HyperFrames-native path that can produce a reviewable re
 
 - For first drafts, prefer `1280x720`, `24fps`, `--quality draft`, and `--workers 1`.
 - Prefer `--skip-skills` when scaffolding because this Fluso skill already provides the guidance.
-- Prefer `inspect --samples 5` for a first pass. Increase samples after the draft is working.
-- For a 30 second video, 4-6 clean scenes is usually enough. Add complexity when the brief needs it.
-- Prefer HyperFrames CLI rendering over custom renderers. A custom Puppeteer/Playwright/PNG-frame pipeline is a fallback, not the default path.
+- Prefer `snapshot --frames 5` before full render. If snapshot cannot launch the browser, render will likely fail too.
+- Prefer `inspect --samples 5` for a first pass. Increase samples only after the draft render path is working.
+- For a 30-60 second video, 4-6 clean scenes is usually enough. Add complexity when the brief needs it.
 - Use final settings such as `1920x1080`, `30fps`, `--quality standard`, or `--quality high` after the draft has passed validation or when the user asks for final output.
 
 ## Runtime Exploration Budget
@@ -41,10 +54,10 @@ Start with the shortest HyperFrames-native path that can produce a reviewable re
 The goal is not to forbid exploration. The goal is to avoid spending most of the task on environment debugging before the video exists.
 
 - First author the project and make it lint/validate clean. A previewable project is useful even if rendering later needs runtime work.
-- If `inspect` or `render` hangs or Chrome/Chromium fails to launch, make 2-3 targeted attempts using user-space tools and documented HyperFrames options.
-- Avoid long Debian package research, `apt`/`dpkg` investigation, browser library symlink experiments, or manual Chrome patching inside Fluso unless the user explicitly asks for deep runtime debugging.
-- If the native HyperFrames path is blocked, report the blocker and offer options: keep the previewable project, try a smaller draft, spend more time on runtime setup, or use a custom rendering fallback.
-- When the user explicitly prioritizes final video output over staying purely HyperFrames-native, a custom fallback can be used after explaining the tradeoff.
+- If `snapshot`, `inspect`, or `render` hangs or Chrome/Chromium fails to launch, make at most 2 targeted attempts using the setup helper, `hyperframes browser ensure`, cache env vars, lower FPS, lower quality, or fewer workers.
+- Avoid Debian package research, `apt`/`dpkg`, browser library symlink experiments, shared-library downloads, or manual Chrome patching inside Fluso unless the user explicitly asks for deep runtime debugging.
+- If the native HyperFrames path is blocked, report the blocker and offer options: keep the previewable project, try a smaller/slower draft, spend more time on runtime setup, or use a custom rendering fallback.
+- Treat linter warnings as repair targets when they affect render, layout, or visible quality. Do not spend long loops on non-blocking warnings after the video already validates and renders.
 
 ## Before Building
 
@@ -98,33 +111,34 @@ Read these when relevant:
 
 Use system tools when they already exist, but prefer user-space setup for missing tools. Fluso usually does not provide `sudo`, `apt`, Docker, or root-level installation, so treat those as unavailable unless the current runtime clearly supports them or the user explicitly asks for that investigation.
 
-If HyperFrames or FFmpeg is missing, run the bundled setup helper from the installed skill folder:
+Run the bundled setup helper once per workspace/project. It prepares pinned user-space HyperFrames/FFmpeg tooling in a shared cache when possible and prints an environment file to source:
 
 ```bash
 bash skills/hyperframes/scripts/setup-hyperframes-runtime.sh <project-dir>
-export PATH="<project-dir>/.hyperframes-tools/bin:<project-dir>/.hyperframes-tools/node_modules/.bin:$PATH"
+source <printed-env-file>
 ```
 
-The helper reuses existing system tools when available. It installs only missing user-space packages under `<project-dir>/.hyperframes-tools`. It does not download a browser or install browser shared libraries.
+The helper reuses existing system tools when available. It installs missing user-space packages under a shared versioned tool cache, not inside every generated video project. It does not install system packages or patch browser libraries.
 
-After setup, check the environment:
-
-Run:
+For render-capable work, use the official HyperFrames browser manager before rendering:
 
 ```bash
-node --version
-npm --version
-hyperframes --version
+HYPERFRAMES_ENSURE_BROWSER=1 bash skills/hyperframes/scripts/setup-hyperframes-runtime.sh <project-dir>
+source <printed-env-file>
+timeout 60s hyperframes doctor --json
 ```
 
-Expected requirements:
+Expected requirements for local rendering:
 
-- Node.js 22 or newer
-- npm or npx
+- Node.js 22 or newer and npm
+- HyperFrames CLI
 - Chrome or a HyperFrames-managed browser for preview/inspection/rendering
 - FFmpeg for final MP4/WebM rendering
+- FFprobe or `validate-render.mjs` fallback metadata parsing for output validation
 
-Run `timeout 30s hyperframes doctor` only when render/inspect fails or before a final render. If setup still cannot provide FFmpeg or Chrome, continue creating/editing the project when useful, but clearly say final rendering is blocked by the remaining runtime issue.
+If `doctor --json` reports missing Chrome/browser or FFmpeg after setup, continue authoring when useful, but clearly say final rendering is blocked by the remaining runtime issue.
+
+Keep first-use expectations honest: installing HyperFrames packages and a browser can add hundreds of MB of cache and several minutes on a cold runtime.
 
 ## Authoring Rules
 
@@ -181,34 +195,38 @@ Multi-scene videos need deliberate transitions. A sequence of hard jumps usually
 ## Workflow
 
 1. Clarify the brief and choose the canvas size.
-2. Scaffold a project with HyperFrames when possible:
+2. Decide audio status. If the user did not ask for narration/music, produce a `silent draft` and say that explicitly.
+3. Prepare the runtime once and source the printed env file.
+4. Scaffold a project with HyperFrames when possible:
 
    ```bash
-   npx --yes hyperframes init <project-name> --non-interactive --example blank --skip-skills
+   hyperframes init <project-name> --non-interactive --example blank --skip-skills
    ```
 
-3. Write or edit the composition HTML, CSS, assets, and timeline.
-4. Validate structure and layout:
+5. Write or edit the composition HTML, CSS, assets, and timeline.
+6. Validate structure and browser smoke before rendering:
 
    ```bash
-   hyperframes lint
-   hyperframes validate
-   timeout 90s hyperframes inspect --samples 5
+   hyperframes lint <project-dir>
+   hyperframes validate <project-dir>
+   timeout 90s hyperframes snapshot <project-dir> --frames 5
+   timeout 90s hyperframes inspect <project-dir> --samples 5
    ```
 
-5. Preview for the user:
+7. Preview for the user when useful:
 
    ```bash
-   hyperframes preview --port <free-port>
+   (cd <project-dir> && hyperframes preview --port <free-port>)
    ```
 
-6. Render only after validation is clean:
+8. Render a draft only after validation and snapshot succeed:
 
    ```bash
-   timeout 180s hyperframes render --quality draft --fps 24 --workers 1 --output draft.mp4
+   (cd <project-dir> && timeout 300s hyperframes render --quality draft --fps 24 --workers 1 --no-browser-gpu --output draft.mp4)
+   node skills/hyperframes/scripts/validate-render.mjs draft.mp4 --expect-duration <seconds> --expect-width <w> --expect-height <h> --expect-fps 24
    ```
 
-Use `--quality standard` or `--quality high` only for final output after the draft path has already worked.
+Use `--quality standard`, `--quality high`, `30fps`, or `1920x1080` only for final output after the draft path has already worked.
 
 ## Advanced Quality Checks
 
@@ -257,11 +275,12 @@ After adding a block or component, read the generated files and wire them into t
 ## Failure Handling
 
 - If HyperFrames packages cannot download, explain the network/package-manager blocker and keep the project files ready.
-- If `doctor` still reports missing FFmpeg after user-space setup, do not claim an MP4 was rendered.
+- If `doctor` still reports missing FFmpeg, FFprobe, Chrome, or browser setup after user-space setup, do not claim an MP4 was rendered.
 - If HyperFrames browser setup or browser launch fails, keep the project previewable and report the browser/runtime blocker. Use a custom renderer only when the user chooses that fallback or the task explicitly prioritizes a rendered file over the native HyperFrames path.
 - If `lint`, `validate`, or `inspect` fails, fix the HTML/CSS/timing before previewing as final.
 - If assets are missing, use clearly named placeholders only when the user agrees or the placeholders are part of a draft.
 - If rendering is slow or memory-heavy, reduce duration, resolution, FPS, worker count, or quality before retrying.
+- If a render leaves a corrupt, tiny, wrong-duration, wrong-resolution, or partial output file, delete or quarantine it and report that no valid video was produced.
 
 ## Output Contract
 
@@ -269,8 +288,10 @@ When finished, report:
 
 - Project directory
 - Preview URL, if a preview server is running
-- Rendered file path, if render succeeded
-- Validation commands run and the result
+- Rendered file path, only if render succeeded and validation passed
+- Duration, resolution, FPS, file size, and audio status (`silent draft` or audio present)
+- Validation commands run and their results
+- Draft/final status
 - Any unresolved blockers, especially missing FFmpeg, Chrome/browser, network access, or assets
 
 Useful references:

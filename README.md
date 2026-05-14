@@ -77,7 +77,7 @@ Each skill needs a matching `marketplace.json` entry:
   "version": "0.1.0",
   "publisher": "Fluso",
   "summary": "Create HTML-based videos with HyperFrames.",
-  "description": "Guides Fluso through planning, authoring, validating, previewing, and rendering HyperFrames video projects.",
+  "description": "Guides Fluso through planning, authoring, validating, previewing, rendering, and verifying HyperFrames video projects.",
   "categories": ["Content", "Marketing"],
   "tags": ["video", "html", "animation", "hyperframes"],
   "license": "Apache-2.0",
@@ -86,11 +86,13 @@ Each skill needs a matching `marketplace.json` entry:
     "SKILL.md",
     "references/video-composition.md",
     "references/beat-direction.md",
-    "scripts/setup-hyperframes-runtime.sh"
+    "scripts/setup-hyperframes-runtime.sh",
+    "scripts/validate-render.mjs"
   ],
   "footprint": {
-    "source_size_bytes": 258399,
-    "estimated_installed_size_bytes": 259423
+    "source_size_bytes": 268448,
+    "estimated_installed_size_bytes": 269472,
+    "estimated_runtime_cache_bytes": 1200000000
   },
   "dependencies": {
     "tier": "user_space_runtime_setup",
@@ -105,7 +107,7 @@ Each skill needs a matching `marketplace.json` entry:
 }
 ```
 
-For V1, `marketplace.json` is updated manually. The `files` list is important: it tells Fluso exactly which files are part of the installable skill.
+For V1, `marketplace.json` is updated manually. The `files` list is important: it tells Fluso exactly which files are part of the installable skill. `estimated_runtime_cache_bytes` is optional, but useful for skills that may download large user-space tools only when the skill runs.
 
 ## Labels
 
@@ -146,7 +148,7 @@ Avoid:
 - Large generated caches or build artifacts.
 - Hidden or broad scripts that are hard to review.
 
-Helper scripts are allowed, but they should be narrow, readable, and tied directly to the skill's workflow. They may download user-space dependencies into the workspace or a project-local tools directory, but they should not mutate system packages or require root access.
+Helper scripts are allowed, but they should be narrow, readable, and tied directly to the skill's workflow. They may download user-space dependencies into the workspace, a shared runtime cache, or a project-local tools directory, but they should not mutate system packages or require root access.
 
 ## Quality Checklist
 
