@@ -10,11 +10,14 @@ labels:
 
 HyperFrames turns HTML, CSS, and JavaScript into video. Use it when the user wants a renderable video project, not just a storyboard or script.
 
+This skill follows the official HyperFrames skill guidance from `heygen-com/hyperframes/skills/hyperframes`, adapted for Fluso's workspace runtime. Keep the upstream authoring discipline, but keep the runtime loop bounded and fast.
+
 The source of truth is a project folder with `index.html`, optional `compositions/`, and optional `assets/`. The fast dev loop is:
 
 ```bash
 npx --yes hyperframes init <project-name> --non-interactive --example blank --skip-skills
 npx --yes hyperframes lint
+npx --yes hyperframes validate
 timeout 90s npx --yes hyperframes inspect --samples 5
 npx --yes hyperframes preview
 timeout 180s npx --yes hyperframes render --quality draft --fps 24 --workers 1 --output <file>.mp4
@@ -58,6 +61,18 @@ For open-ended requests, ask only for missing essentials:
 
 For specific edits, read the existing HyperFrames files first and change only what was requested.
 
+## Planning Before Code
+
+Do not jump straight from a vague prompt to HTML. For new multi-scene videos, create a short internal plan first:
+
+- Visual identity: use `design.md` or `DESIGN.md` when present. If missing, infer a compact mood, palette, type direction, and motion tone from the user request.
+- Narrative arc: define what the viewer should understand by the end.
+- Scene rhythm: name the pacing pattern, such as `hook-build-peak-breathe-cta` or `slow-build-BUILD-PEAK-resolve`.
+- Beat direction: for each scene, describe the visual world, foreground/midground/background layers, and the motion verb for important elements.
+- Transition plan: decide how each scene hands off to the next before writing timelines.
+
+Build what the user asked for. Do not add extra scenes, audio, narration, or complex effects unless they clearly improve the requested video or the user asked for them.
+
 ## Runtime Setup
 
 Use system tools when they already exist, but prefer user-space setup for missing tools. Never use `sudo`, `apt`, Docker setup, or root-level installation unless the user explicitly asks for it.
@@ -96,6 +111,7 @@ Every composition must follow these rules:
 
 - Root composition includes `data-composition-id`, `data-start="0"`, `data-width`, and `data-height`.
 - Timed visual clips include a unique `id`, `class="clip"`, `data-start`, `data-duration`, and `data-track-index`.
+- Use `data-track-index` for timing lanes only. It does not control visual depth.
 - Use CSS `z-index` for visual layering. `data-track-index` is timing/track metadata, not visual depth.
 - Videos must be `muted playsinline`. If video audio is needed, add a separate `<audio>` element.
 - GSAP timelines must be `paused: true` and registered on `window.__timelines["<composition-id>"]`.
@@ -103,17 +119,43 @@ Every composition must follow these rules:
 - Do not call `play()`, `pause()`, or manual seek on media. HyperFrames controls playback.
 - Use `data-duration`, not `data-end`.
 - Do not use a `<template>` wrapper for the standalone `index.html` root composition. Use templates only for sub-compositions.
+- If pseudo-randomness is needed, use a seeded deterministic generator.
+- Do not animate `visibility` or `display`. Animate visual properties such as opacity, transform, color, and blur.
+- Avoid `repeat: -1`. Use a finite repeat count calculated from the composition duration.
 
 ## Layout Quality
 
 Build the hero frame first, then animate into it.
 
+- Position each scene at its most visible moment using static HTML/CSS first. Then use `gsap.from()` entrances to animate into those positions.
 - Make the main scene container fill the canvas with `width: 100%`, `height: 100%`, `box-sizing: border-box`, and responsive padding.
 - Prefer flex/grid layout for real content. Use absolute positioning mainly for decorative layers.
 - Keep titles, captions, labels, and cards inside safe margins.
 - Use video-scale typography: large readable headlines, clear body text, and enough contrast.
 - Let text wrap naturally with `max-width`. Avoid forced `<br>` unless the line breaks are part of the visual design.
 - If content is dynamic, use variables and fit text rather than hard-coding fragile sizes.
+
+## Visual Quality
+
+Video frames are not web pages. Do not make a sparse web layout and call it a video.
+
+- Every scene needs background texture, midground content, and foreground accents.
+- Use visible color presence. Muted is fine; flat or invisible is not.
+- Scale up for video: headlines usually `64px+`, body text `28px+`, labels `18px+`.
+- Add ambient motion to decorative elements. Static decor should be intentional.
+- Use two or more focal points in rich scenes so the eye can travel.
+- Anchor important content to zones and edges when useful. Avoid default centered stacks for every scene.
+- Avoid full-screen linear gradients on dark backgrounds because they band badly in H.264. Prefer radial light, texture, grain, local glow, or structured panels.
+
+## Scene Transitions
+
+Multi-scene videos need deliberate transitions. A sequence of hard jumps usually feels unfinished.
+
+- Use transitions between scenes unless the user explicitly asks for hard cuts or the edit is intentionally percussive.
+- Give every scene entrance animations. Elements should not simply appear fully formed.
+- Do not fade out every outgoing scene before the transition. Let the transition carry the handoff unless it is the final scene.
+- For final scenes, a fade to black or fade out is acceptable.
+- Match transition style to energy: CSS blur/whip/zoom for connective motion; shader transitions for hero reveals or major energy shifts.
 
 ## Workflow
 
@@ -129,6 +171,7 @@ Build the hero frame first, then animate into it.
 
    ```bash
    hyperframes lint
+   hyperframes validate
    timeout 90s hyperframes inspect --samples 5
    ```
 
@@ -145,6 +188,15 @@ Build the hero frame first, then animate into it.
    ```
 
 Use `--quality standard` or `--quality high` only for final output after the draft path has already worked.
+
+## Variables and Editability
+
+When the user may want to revise text, colors, or content later, expose the important inputs as HyperFrames variables:
+
+- Declare variables on the root `<html>` with `data-composition-variables`.
+- Read them once with `window.__hyperframes.getVariables()`.
+- Provide sensible defaults so preview works without CLI overrides.
+- Use `--strict-variables` for final validation when variable overrides are involved.
 
 ## Website-to-Video
 
@@ -173,7 +225,7 @@ After adding a block or component, read the generated files and wire them into t
 - If HyperFrames packages cannot download, explain the network/package-manager blocker and keep the project files ready.
 - If `doctor` still reports missing FFmpeg after user-space setup, do not claim an MP4 was rendered.
 - If HyperFrames browser setup or browser launch fails, do not install shared libraries and do not switch to a custom renderer. Keep the project previewable and report the browser/runtime blocker.
-- If `lint` or `inspect` fails, fix the HTML/CSS/timing before previewing as final.
+- If `lint`, `validate`, or `inspect` fails, fix the HTML/CSS/timing before previewing as final.
 - If assets are missing, use clearly named placeholders only when the user agrees or the placeholders are part of a draft.
 - If rendering is slow or memory-heavy, reduce duration, resolution, FPS, worker count, or quality before retrying.
 
