@@ -184,6 +184,62 @@ Use only when scope and dependencies justify them:
 | PhoneInfoga | phone metadata | restricted, weak identity signal |
 | GHunt | Google account OSINT | restricted/internal; avoid authenticated probing unless explicitly approved |
 
+## Sherlock Username Tool
+
+Use Sherlock as the default broad username existence scanner when the investigation includes public usernames, handles, or public profile verification. Sherlock checks a username across many public sites and produces candidate profile URLs. Treat its output as leads that need verification, not proof of identity.
+
+Run Sherlock through the skill's Python project so dependencies stay in user space:
+
+```bash
+uv run --project /fluso/user/workspace/skills/osint-investigation sherlock \
+  --print-found \
+  --no-color \
+  --timeout 20 \
+  --csv \
+  --folderoutput osint/<case-slug>/sherlock \
+  <username>
+```
+
+For multiple usernames, pass them in one command:
+
+```bash
+uv run --project /fluso/user/workspace/skills/osint-investigation sherlock \
+  --print-found \
+  --no-color \
+  --timeout 20 \
+  --csv \
+  --folderoutput osint/<case-slug>/sherlock \
+  <username-1> <username-2> <username-3>
+```
+
+Expected CSV columns:
+
+- `username`
+- `name`
+- `url_main`
+- `url_user`
+- `exists`
+- `http_status`
+- `response_time_s`
+
+Post-process only rows where `exists` indicates a claimed/found profile. For each candidate, create an evidence record with:
+
+- `tool`: `sherlock`
+- `source`: site name
+- `source_url`: candidate profile URL
+- `confidence`: start at 45 for an unverified Sherlock hit
+- `observation_type`: `username_candidate_profile`
+- `limitations`: `["Username existence does not prove identity. Verify with profile content or direct cross-links."]`
+
+Raise confidence only after independent verification:
+
+- +20 if the candidate profile links to a known public website/profile from the case.
+- +15 if the bio/display name/avatar strongly matches other public evidence.
+- +10 if multiple public profiles cross-link each other.
+- -20 if the username is common, profile is empty, or profile content conflicts with the case.
+
+Do not use Sherlock proxy, Tor, browser-opening, NSFW, or response-dump modes by default. Do not treat absence from Sherlock as proof that a username does not exist.
+
 ## Workflow: Domain / Organization Recon
 
 Use for owned asset review, vendor assessment, brand/domain monitoring, or public cyber footprint.
@@ -254,17 +310,18 @@ Use for public profile verification, impersonation review, brand monitoring, or 
 2. Run low-risk username lookup first:
    - Sherlock
    - WhatsMyName-derived checks
-3. Treat each match as a candidate lead.
-4. Verify candidate profiles using public page evidence:
+3. Save Sherlock CSV output under `osint/<case-slug>/sherlock/`.
+4. Treat each match as a candidate lead.
+5. Verify candidate profiles using public page evidence:
    - profile URL
    - display name
    - bio text
    - avatar presence
    - account creation date if public
    - linked domains/usernames if public
-5. Score each candidate independently.
-6. Avoid declaring real-world identity unless multiple strong public signals support it and the purpose permits that conclusion.
-7. Output candidates with caveats.
+6. Score each candidate independently.
+7. Avoid declaring real-world identity unless multiple strong public signals support it and the purpose permits that conclusion.
+8. Output candidates with caveats.
 
 
 ## Workflow: Internal Authorized Person / Profile Investigation
@@ -521,6 +578,11 @@ Quality checks:
 ## Runtime And Dependency Guidance
 
 Keep the base skill lightweight. Prefer Python scripts with declared dependencies only when implementation is needed.
+
+Bundled dependency project:
+
+- `pyproject.toml` declares `sherlock-project` for username/profile discovery.
+- Run it with `uv run --project /fluso/user/workspace/skills/osint-investigation sherlock ...`.
 
 Good default dependencies for future scripts:
 

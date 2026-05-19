@@ -1,0 +1,8 @@
+[project]
+name = "fluso-osint-investigation"
+version = "0.1.0"
+description = "Runtime dependencies for the Fluso Sherlock Holmes OSINT investigation skill."
+requires-python = ">=3.11"
+dependencies = [
+  "sherlock-project==0.16.0"
+]

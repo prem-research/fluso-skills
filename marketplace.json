@@ -58,17 +58,28 @@
       ],
       "entrypoint": "SKILL.md",
       "files": [
-        "SKILL.md"
+        "SKILL.md",
+        "pyproject.toml"
       ],
       "footprint": {
-        "source_size_bytes": 17296,
-        "estimated_installed_size_bytes": 18320,
-        "estimated_runtime_cache_bytes": 0
+        "source_size_bytes": 19816,
+        "estimated_installed_size_bytes": 20840,
+        "estimated_runtime_cache_bytes": 90000000
       },
       "dependencies": {
-        "tier": "instruction_only",
-        "recipes": [],
-        "system_capabilities": []
+        "tier": "python_uv",
+        "recipes": [
+          {
+            "type": "python_uv",
+            "project": ".",
+            "package": "sherlock-project",
+            "version": "0.16.0"
+          }
+        ],
+        "system_capabilities": [
+          "python",
+          "uv"
+        ]
       },
       "safety": {
         "has_helper_scripts": false,
