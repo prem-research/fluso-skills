@@ -161,8 +161,11 @@ Before opening a PR, check that:
 
 ## Current Status
 
-This repository is the public source for Fluso's optional marketplace skills. The first marketplace skill is `podcast-production`, which helps Fluso plan, script, render audio drafts, and package podcast episodes.
+This repository is the public source for Fluso's optional marketplace skills. Current skills include:
 
-The Podcast Production skill uses Fluso's existing audio capability when available. It does not bundle Chromium, FFmpeg, local TTS models, or generated caches, so it stays lightweight for marketplace install testing.
+- `podcast-production` — helps Fluso plan, script, render audio drafts, and package podcast episodes.
+- `osint-investigation` — guides structured public-source investigation workflows for domains, organizations, public profiles, metadata, threat intelligence, and evidence-based reports.
+
+These skills do not bundle Chromium, FFmpeg, local TTS models, generated caches, or heavy recon frameworks by default, so they stay lightweight for marketplace install testing.
 
 The catalog is intentionally simple for V1: add skill files, update `marketplace.json`, and submit a PR. Future improvements may include CI validation, automatic marketplace catalog generation, size checks, dependency review automation, and template-based skill creation.

@@ -36,6 +36,45 @@
         "runs_install_script": false,
         "network_at_runtime": true
       }
+    },
+    {
+      "id": "osint-investigation",
+      "display_name": "OSINT Investigation",
+      "version": "0.1.0",
+      "publisher": "Fluso",
+      "summary": "Run structured public-source intelligence workflows for domains, organizations, profiles, metadata, threat intel, and evidence-based reports.",
+      "description": "Guides Fluso through authorized OSINT investigations with scoped collection, domain and organization reconnaissance, public profile verification, metadata analysis, public-code intelligence, threat-intel enrichment, entity graphing, confidence scoring, and structured reports.",
+      "categories": [
+        "Research",
+        "Engineering"
+      ],
+      "tags": [
+        "osint",
+        "security",
+        "reconnaissance",
+        "threat-intel",
+        "metadata",
+        "investigation"
+      ],
+      "entrypoint": "SKILL.md",
+      "files": [
+        "SKILL.md"
+      ],
+      "footprint": {
+        "source_size_bytes": 17296,
+        "estimated_installed_size_bytes": 18320,
+        "estimated_runtime_cache_bytes": 0
+      },
+      "dependencies": {
+        "tier": "instruction_only",
+        "recipes": [],
+        "system_capabilities": []
+      },
+      "safety": {
+        "has_helper_scripts": false,
+        "runs_install_script": false,
+        "network_at_runtime": true
+      }
     }
   ]
 }
