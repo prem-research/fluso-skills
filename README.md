@@ -72,35 +72,30 @@ Each skill needs a matching `marketplace.json` entry:
 
 ```json
 {
-  "id": "hyperframes",
-  "display_name": "HyperFrames",
+  "id": "podcast-production",
+  "display_name": "Podcast Production",
   "version": "0.1.0",
   "publisher": "Fluso",
-  "summary": "Create HTML-based videos with HyperFrames.",
-  "description": "Guides Fluso through planning, authoring, validating, previewing, rendering, and verifying HyperFrames video projects.",
-  "categories": ["Content", "Marketing"],
-  "tags": ["video", "html", "animation", "hyperframes"],
-  "license": "Apache-2.0",
+  "summary": "Plan, script, render audio drafts, and package podcast episodes.",
+  "description": "Guides Fluso through end-to-end podcast production with outlines, scripts, audio drafts, show notes, chapters, and launch copy.",
+  "categories": ["Content"],
+  "tags": ["podcast", "audio", "script", "show-notes"],
   "entrypoint": "SKILL.md",
   "files": [
-    "SKILL.md",
-    "references/video-composition.md",
-    "references/beat-direction.md",
-    "scripts/setup-hyperframes-runtime.sh",
-    "scripts/validate-render.mjs"
+    "SKILL.md"
   ],
   "footprint": {
-    "source_size_bytes": 268448,
-    "estimated_installed_size_bytes": 269472,
-    "estimated_runtime_cache_bytes": 1200000000
+    "source_size_bytes": 4055,
+    "estimated_installed_size_bytes": 5079,
+    "estimated_runtime_cache_bytes": 0
   },
   "dependencies": {
-    "tier": "user_space_runtime_setup",
+    "tier": "built_in_audio_tool",
     "recipes": [],
-    "system_capabilities": ["node", "npm"]
+    "system_capabilities": []
   },
   "safety": {
-    "has_helper_scripts": true,
+    "has_helper_scripts": false,
     "runs_install_script": false,
     "network_at_runtime": true
   }
@@ -166,8 +161,8 @@ Before opening a PR, check that:
 
 ## Current Status
 
-This repository is the public source for Fluso's optional marketplace skills. The first marketplace skill is `hyperframes`, which helps Fluso create video projects with HTML, CSS, JavaScript, and HyperFrames.
+This repository is the public source for Fluso's optional marketplace skills. The first marketplace skill is `podcast-production`, which helps Fluso plan, script, render audio drafts, and package podcast episodes.
 
-The HyperFrames skill includes upstream quality references for video composition, typography, motion, transitions, visual styles, captions, audio-reactive workflows, and validation helpers. Its `SKILL.md` is still the entrypoint; deeper files are loaded only when the task needs them.
+The Podcast Production skill uses Fluso's existing audio capability when available. It does not bundle Chromium, FFmpeg, local TTS models, or generated caches, so it stays lightweight for marketplace install testing.
 
 The catalog is intentionally simple for V1: add skill files, update `marketplace.json`, and submit a PR. Future improvements may include CI validation, automatic marketplace catalog generation, size checks, dependency review automation, and template-based skill creation.

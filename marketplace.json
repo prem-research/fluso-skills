@@ -2,89 +2,37 @@
   "schema_version": 1,
   "skills": [
     {
-      "id": "hyperframes",
-      "display_name": "HyperFrames",
+      "id": "podcast-production",
+      "display_name": "Podcast Production",
       "version": "0.1.0",
       "publisher": "Fluso",
-      "summary": "Create HTML-based videos with HyperFrames.",
-      "description": "Guides Fluso through planning, authoring, validating, previewing, rendering, and verifying HyperFrames video projects using HTML, CSS, JavaScript, animations, captions, overlays, transitions, and website-to-video workflows.",
+      "summary": "Plan, script, render audio drafts, and package podcast episodes.",
+      "description": "Guides Fluso through end-to-end podcast production: episode planning, outlines, scripts, guest questions, synthesized audio drafts through Fluso audio, show notes, chapters, and launch copy.",
       "categories": [
-        "Content",
-        "Marketing"
+        "Content"
       ],
       "tags": [
-        "video",
-        "html",
-        "animation",
-        "hyperframes"
+        "podcast",
+        "audio",
+        "script",
+        "show-notes"
       ],
-      "license": "Apache-2.0",
       "entrypoint": "SKILL.md",
       "files": [
-        "SKILL.md",
-        "data-in-motion.md",
-        "house-style.md",
-        "palettes/bold-energetic.md",
-        "palettes/clean-corporate.md",
-        "palettes/dark-premium.md",
-        "palettes/jewel-rich.md",
-        "palettes/monochrome.md",
-        "palettes/nature-earth.md",
-        "palettes/neon-electric.md",
-        "palettes/pastel-soft.md",
-        "palettes/warm-editorial.md",
-        "patterns.md",
-        "references/audio-reactive.md",
-        "references/beat-direction.md",
-        "references/captions.md",
-        "references/css-patterns.md",
-        "references/design-picker.md",
-        "references/dynamic-techniques.md",
-        "references/motion-principles.md",
-        "references/narration.md",
-        "references/prompt-expansion.md",
-        "references/techniques.md",
-        "references/transcript-guide.md",
-        "references/transitions.md",
-        "references/transitions/catalog.md",
-        "references/transitions/css-3d.md",
-        "references/transitions/css-blur.md",
-        "references/transitions/css-cover.md",
-        "references/transitions/css-destruction.md",
-        "references/transitions/css-dissolve.md",
-        "references/transitions/css-distortion.md",
-        "references/transitions/css-grid.md",
-        "references/transitions/css-light.md",
-        "references/transitions/css-mechanical.md",
-        "references/transitions/css-other.md",
-        "references/transitions/css-push.md",
-        "references/transitions/css-radial.md",
-        "references/transitions/css-scale.md",
-        "references/typography.md",
-        "references/video-composition.md",
-        "scripts/animation-map.mjs",
-        "scripts/contrast-report.mjs",
-        "scripts/package-loader.mjs",
-        "scripts/setup-hyperframes-runtime.sh",
-        "scripts/validate-render.mjs",
-        "templates/design-picker.html",
-        "visual-styles.md"
+        "SKILL.md"
       ],
       "footprint": {
-        "source_size_bytes": 268448,
-        "estimated_installed_size_bytes": 269472,
-        "estimated_runtime_cache_bytes": 1200000000
+        "source_size_bytes": 4055,
+        "estimated_installed_size_bytes": 5079,
+        "estimated_runtime_cache_bytes": 0
       },
       "dependencies": {
-        "tier": "user_space_runtime_setup",
+        "tier": "built_in_audio_tool",
         "recipes": [],
-        "system_capabilities": [
-          "node",
-          "npm"
-        ]
+        "system_capabilities": []
       },
       "safety": {
-        "has_helper_scripts": true,
+        "has_helper_scripts": false,
         "runs_install_script": false,
         "network_at_runtime": true
       }
