@@ -164,7 +164,7 @@ Before opening a PR, check that:
 This repository is the public source for Fluso's optional marketplace skills. Current skills include:
 
 - `podcast-production` — helps Fluso plan, script, render audio drafts, and package podcast episodes.
-- `osint-investigation` — guides structured public-source investigation workflows for domains, organizations, public profiles, metadata, threat intelligence, and evidence-based reports.
+- `osint-investigation` / **Sherlock Holmes** — guides structured public-source investigation workflows for domains, organizations, public profiles, metadata, threat intelligence, and evidence-based reports.
 
 These skills do not bundle Chromium, FFmpeg, local TTS models, generated caches, or heavy recon frameworks by default, so they stay lightweight for marketplace install testing.
 

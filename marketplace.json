@@ -39,7 +39,7 @@
     },
     {
       "id": "osint-investigation",
-      "display_name": "OSINT Investigation",
+      "display_name": "Sherlock Holmes",
       "version": "0.1.0",
       "publisher": "Fluso",
       "summary": "Run structured public-source intelligence workflows for domains, organizations, profiles, metadata, threat intel, and evidence-based reports.",
