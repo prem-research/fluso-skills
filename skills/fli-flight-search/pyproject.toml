@@ -1,0 +1,8 @@
+[project]
+name = "fluso-fli-flight-search"
+version = "0.1.0"
+description = "Runtime dependencies for the Fluso Fli flight search marketplace skill."
+requires-python = ">=3.11"
+dependencies = [
+  "flights[mcp]>=0.8.4,<0.9"
+]

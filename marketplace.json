@@ -38,6 +38,55 @@
       }
     },
     {
+      "id": "fli-flight-search",
+      "display_name": "Fli Flight Search",
+      "version": "0.1.0",
+      "publisher": "Fluso",
+      "summary": "Search and compare public flight options using the Fli Google Flights CLI/MCP tool.",
+      "description": "Guides Fluso through flight search and fare research with Fli: fixed-date searches, flexible cheapest-date searches, round trips, multi-city itineraries, airline/cabin/stop filters, structured comparison tables, and travel research reports.",
+      "categories": [
+        "Travel",
+        "Research"
+      ],
+      "tags": [
+        "flights",
+        "travel",
+        "google-flights",
+        "fare-search",
+        "mcp"
+      ],
+      "entrypoint": "SKILL.md",
+      "files": [
+        "SKILL.md",
+        "pyproject.toml"
+      ],
+      "footprint": {
+        "source_size_bytes": 3849,
+        "estimated_installed_size_bytes": 4873,
+        "estimated_runtime_cache_bytes": 70000000
+      },
+      "dependencies": {
+        "tier": "python_uv",
+        "recipes": [
+          {
+            "type": "python_uv",
+            "project": ".",
+            "package": "flights",
+            "version": ">=0.8.4,<0.9"
+          }
+        ],
+        "system_capabilities": [
+          "python",
+          "uv"
+        ]
+      },
+      "safety": {
+        "has_helper_scripts": false,
+        "runs_install_script": false,
+        "network_at_runtime": true
+      }
+    },
+    {
       "id": "osint-investigation",
       "display_name": "Sherlock Holmes",
       "version": "0.1.0",
