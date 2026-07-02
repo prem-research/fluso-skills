@@ -1,0 +1,11 @@
+# Lenient markdownlint config: structural consistency on, prose-hostile rules off.
+default: true
+
+# Line length — SKILL.md descriptions and prose run long by design.
+MD013: false
+
+# Inline HTML — allowed for badges/embeds if ever needed.
+MD033: false
+
+# First line must be a top-level heading — SKILL.md starts with frontmatter.
+MD041: false
