@@ -109,7 +109,7 @@ For V1, `marketplace.json` is updated manually. The `files` list is important: i
 Use one or two labels from this controlled set:
 
 ```text
-Marketing, Sales, Legal, Operations, Engineering, Finance, Research, Content, Support
+Marketing, Sales, Legal, Operations, Engineering, Finance, Research, Content, Support, Travel
 ```
 
 Choose labels based on the user's workflow, not the implementation detail.
@@ -158,6 +158,26 @@ Before opening a PR, check that:
 - Any dependency setup stays in user space and explains what it downloads.
 - `marketplace.json` describes the skill accurately.
 - The skill can be understood by a reviewer without reading unrelated context.
+
+## Development
+
+All changes land through pull requests: direct pushes to `main` are blocked by a repository ruleset, and PRs must pass the CI checks before they can merge.
+
+CI runs [pre-commit](https://pre-commit.com/) on all files, so the same checks run locally and remotely. Set up the hooks once after cloning:
+
+```bash
+# install pre-commit with your preferred tool:
+uv tool install pre-commit   # or: pipx install pre-commit / brew install pre-commit / nix profile install nixpkgs#pre-commit
+pre-commit install
+```
+
+The checks cover:
+
+- `marketplace.json` validated against `schemas/marketplace.schema.json`.
+- Cross-file consistency via `scripts/validate_skills.py`: skill ids match folder names and SKILL.md frontmatter, labels come from the controlled set, the `files` list matches what is tracked in the skill folder, and no forbidden paths (`__pycache__`, `.venv`, `node_modules`, `.env`) are committed.
+- Typo checking (typos), secrets scanning (gitleaks), markdown lint (markdownlint), and JSON/YAML/TOML syntax and whitespace hygiene.
+
+Run everything manually with `pre-commit run --all-files`.
 
 ## Current Status
 

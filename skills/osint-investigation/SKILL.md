@@ -10,7 +10,6 @@ labels:
 
 Run serious public-source intelligence workflows with evidence, scope control, confidence scoring, and structured reporting. Optimize for useful cybersecurity and investigation outcomes, not shallow search summaries.
 
-
 ## Investigation Preflight
 
 Before running tools, classify the request:
@@ -69,7 +68,7 @@ Never merge weak signals into one conclusion without explaining the evidence cha
 Use these confidence defaults:
 
 | Confidence | Meaning |
-|---:|---|
+| ---: | --- |
 | 90-100 | Deterministic primary-source result, hash-bound file metadata, authoritative API result |
 | 70-89 | Corroborated by multiple independent public sources |
 | 40-69 | Plausible but not independently confirmed |
@@ -156,7 +155,7 @@ Prefer lightweight deterministic tools and APIs first. Use broad automation fram
 Use these for MVP/default workflows:
 
 | Area | Preferred tools/APIs | Notes |
-|---|---|---|
+| --- | --- | --- |
 | RDAP/WHOIS | RDAP HTTP APIs, registrar RDAP endpoints | Prefer RDAP JSON over raw WHOIS parsing |
 | DNS | `dnspython`, system `dig` if present | Record resolver, TTL, status |
 | Certificate transparency | crt.sh-style JSON, Censys cert search if keyed | Mark as historical/passive, not live proof |
@@ -170,7 +169,7 @@ Use these for MVP/default workflows:
 Use only when scope and dependencies justify them:
 
 | Tool | Best use | Default posture |
-|---|---|---|
+| --- | --- | --- |
 | Amass | deep domain/attack-surface mapping | passive by default; advanced active only with authorization |
 | theHarvester | public emails/subdomains/names for organizations | organization/domain scope only |
 | Subfinder | passive subdomain enumeration | good optional Go binary |
@@ -272,7 +271,6 @@ Use for owned asset review, vendor assessment, brand/domain monitoring, or publi
    - unexpected cloud/vendor infrastructure
 9. Produce a report with evidence tables.
 
-
 ## Workflow: Threat Intelligence Enrichment
 
 Use for IPs, domains, URLs, or hashes.
@@ -322,7 +320,6 @@ Use for public profile verification, impersonation review, brand monitoring, or 
 6. Score each candidate independently.
 7. Avoid declaring real-world identity unless multiple strong public signals support it and the purpose permits that conclusion.
 8. Output candidates with caveats.
-
 
 ## Workflow: Internal Authorized Person / Profile Investigation
 
@@ -404,7 +401,7 @@ For phone:
 For authorized internal work, prioritize sources that produce inspectable public evidence:
 
 | Source type | Use | Output posture |
-|---|---|---|
+| --- | --- | --- |
 | Public profile pages | Candidate profile discovery and verification | Lead with URL and confidence |
 | Public web search | Exact identifier references and cross-links | Cite every result |
 | Username tools | Broad handle existence search | Candidate only, high false-positive caution |
