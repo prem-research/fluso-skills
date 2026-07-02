@@ -1,0 +1,51 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-json
+      - id: check-yaml
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: [--maxkb=500]
+      - id: check-case-conflict
+      - id: detect-private-key
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: mixed-line-ending
+        args: [--fix=lf]
+
+  - repo: https://github.com/crate-ci/typos
+    rev: v1.48.0
+    hooks:
+      - id: typos
+        args: [--force-exclude]
+
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.0
+    hooks:
+      - id: gitleaks
+
+  - repo: https://github.com/python-jsonschema/check-jsonschema
+    rev: 0.37.4
+    hooks:
+      - id: check-jsonschema
+        name: validate marketplace.json against schema
+        files: ^marketplace\.json$
+        args: [--schemafile, schemas/marketplace.schema.json]
+      - id: check-github-workflows
+
+  - repo: https://github.com/DavidAnson/markdownlint-cli2
+    rev: v0.23.0
+    hooks:
+      - id: markdownlint-cli2
+
+  - repo: local
+    hooks:
+      - id: validate-skills
+        name: validate skills and marketplace consistency
+        entry: python scripts/validate_skills.py
+        language: python
+        additional_dependencies: [pyyaml]
+        pass_filenames: false
+        always_run: true
