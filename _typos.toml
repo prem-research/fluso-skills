@@ -1,0 +1,5 @@
+# Project-wide typos configuration.
+# Security and GRC acronyms that the default dictionary misreads as typos.
+[default.extend-words]
+RTO = "RTO"
+RPO = "RPO"

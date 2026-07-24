@@ -1,0 +1,8 @@
+[project]
+name = "fluso-security-questionnaire"
+version = "0.1.0"
+description = "Runtime dependencies for the Fluso security questionnaire marketplace skill."
+requires-python = ">=3.11"
+dependencies = [
+  "openpyxl>=3.1,<4"
+]
