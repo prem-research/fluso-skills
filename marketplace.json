@@ -135,6 +135,67 @@
         "runs_install_script": false,
         "network_at_runtime": true
       }
+    },
+    {
+      "id": "security-questionnaire",
+      "display_name": "Security Questionnaire",
+      "version": "0.1.0",
+      "publisher": "Fluso",
+      "summary": "Complete inbound vendor security questionnaires from your own policies, with every answer cited and anything unanswerable flagged for review.",
+      "description": "Guides Fluso through completing a vendor security assessment (CAIQ, SIG, VSAQ, HECVAT, or a custom sheet) using only the organization's own policy documents and past questionnaires: reads the spreadsheet into clean rows, answers each question conservatively with a source citation, flags insurance, legal, breach-history, and unevidenced-certification questions for a human, writes answers back without disturbing the sheet's formatting, and produces a one-page evidence appendix. Runs entirely on local documents with no network access.",
+      "categories": [
+        "Legal",
+        "Operations"
+      ],
+      "tags": [
+        "security",
+        "compliance",
+        "questionnaire",
+        "vendor-assessment",
+        "due-diligence",
+        "caiq",
+        "sig",
+        "grc"
+      ],
+      "entrypoint": "SKILL.md",
+      "files": [
+        "SKILL.md",
+        "pyproject.toml",
+        "scripts/questionnaire.py",
+        "references/answering-rules.md",
+        "references/questionnaire-formats.md",
+        "assets/evidence-appendix-template.md",
+        "assets/example/sample-questionnaire.csv",
+        "assets/example/acme-security-policy.md",
+        "assets/example/answers.json",
+        "assets/example/completed-questionnaire.csv",
+        "assets/example/evidence-appendix.md"
+      ],
+      "footprint": {
+        "source_size_bytes": 40919,
+        "estimated_installed_size_bytes": 41943,
+        "estimated_runtime_cache_bytes": 15000000
+      },
+      "dependencies": {
+        "tier": "python_uv",
+        "recipes": [
+          {
+            "type": "python_uv",
+            "project": ".",
+            "package": "openpyxl",
+            "version": ">=3.1,<4"
+          }
+        ],
+        "system_capabilities": [
+          "python",
+          "uv"
+        ]
+      },
+      "safety": {
+        "has_helper_scripts": true,
+        "runs_install_script": false,
+        "network_at_runtime": false
+      }
     }
   ]
 }

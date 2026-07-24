@@ -185,6 +185,7 @@ This repository is the public source for Fluso's optional marketplace skills. Cu
 
 - `podcast-production` — helps Fluso plan, script, render audio drafts, and package podcast episodes.
 - `osint-investigation` / **Sherlock Holmes** — guides structured public-source investigation workflows for domains, organizations, public profiles, metadata, threat intelligence, and evidence-based reports.
+- `security-questionnaire` — completes inbound vendor security questionnaires strictly from the organization's own cited policy documents, flagging anything unanswerable for human review, and writes answers back without disturbing the sheet's formatting.
 
 These skills do not bundle Chromium, FFmpeg, local TTS models, generated caches, or heavy recon frameworks by default, so they stay lightweight for marketplace install testing.
 

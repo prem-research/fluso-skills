@@ -1,0 +1,59 @@
+{
+  "answers": [
+    {
+      "row": 2,
+      "ref": "AC-01",
+      "response": "Yes",
+      "detail": "All administrative and remote access to production systems requires multi-factor authentication.",
+      "evidence": "Acme Corp Information Security Policy v3.1 §2",
+      "status": "Complete"
+    },
+    {
+      "row": 3,
+      "ref": "AC-02",
+      "response": "Yes",
+      "detail": "User access rights are reviewed quarterly by system owners; access is revoked within 24 hours of termination.",
+      "evidence": "Acme Corp Information Security Policy v3.1 §2",
+      "status": "Complete"
+    },
+    {
+      "row": 4,
+      "ref": "DP-01",
+      "response": "Yes",
+      "detail": "Data transmitted over public networks is encrypted in transit using TLS 1.2 or higher.",
+      "evidence": "Acme Corp Information Security Policy v3.1 §4",
+      "status": "Complete"
+    },
+    {
+      "row": 5,
+      "ref": "DP-02",
+      "response": "Yes",
+      "detail": "Customer data at rest is encrypted using AES-256.",
+      "evidence": "Acme Corp Information Security Policy v3.1 §4",
+      "status": "Complete"
+    },
+    {
+      "row": 6,
+      "ref": "BC-01",
+      "response": "No",
+      "detail": "Formal recovery time objectives are not yet defined; they are being established and are targeted for the next policy revision.",
+      "evidence": "Acme Corp Information Security Policy v3.1 §7",
+      "status": "Complete"
+    },
+    {
+      "row": 7,
+      "ref": "PT-01",
+      "status": "Needs review"
+    },
+    {
+      "row": 8,
+      "ref": "INS-01",
+      "status": "Needs review"
+    },
+    {
+      "row": 9,
+      "ref": "CERT-01",
+      "status": "Needs review"
+    }
+  ]
+}
